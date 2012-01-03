@@ -9,8 +9,7 @@ WarnSquash is built on top of Clang. Therefore, any actionable warning
 WS. However, this does mean that WS is limited to fixing the C family of
 languages (C, C++, Objective C).
 
-WarnSquash was originally authored by Gregory Szorc
-<gregory.szorc@gmail.com>.
+WarnSquash was originally authored by Gregory Szorc.
 
 Installing
 ==========

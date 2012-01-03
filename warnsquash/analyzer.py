@@ -54,7 +54,8 @@ class CodeUnit(object):
 
     def fix_warnings(self, callback=None,
             remove_unused_variables=False,
-            remove_unused_parameter_names=False):
+            remove_unused_parameter_names=False,
+            comment_unused_parameter_names=False):
         """Fixes warnings in the source code.
 
         After this is called, you can get the mutated source via .lines
@@ -64,7 +65,11 @@ class CodeUnit(object):
         element says whether to apply the fix. If True, the second can control
         the replacement content. If None, default behavior is performed.
 
-        remove_unused_variables -- If True, unused variables are removed.
+        remove_unused_parameter_names -- If True, remove unused parameter names
+        from function definitions.
+
+        comment_unused_parameter_names -- If True, replace unused parameter
+        names with an in-line comment.
         """
 
         diagnostics = collections.deque(self.tu.diagnostics)
@@ -92,8 +97,9 @@ class CodeUnit(object):
             # functionality. I also have the beginning of a patch implementing
             # it. We'll see if they are willing to accept it.
 
-            if (remove_unused_parameter_names and
-            diagnostic.spelling.startswith('unused parameter')):
+            if ((remove_unused_parameter_names or
+                    comment_unused_parameter_names) and
+                    diagnostic.spelling.startswith('unused parameter')):
                 cursor = clang.cindex.Cursor.from_location(self.tu,
                         diagnostic.location)
                 assert(cursor.kind == clang.cindex.CursorKind.PARM_DECL)
@@ -115,7 +121,14 @@ class CodeUnit(object):
                 # pointers. The above calculation leaves these out. The current
                 # method is probably safe, but it doesn't feel right.
                 relevant = line[start_column:end_column]
-                relevant = relevant.replace(variable_name, '').strip()
+
+                if remove_unused_parameter_names:
+                    relevant = relevant.replace(variable_name, '').strip()
+                elif comment_unused_parameter_names:
+                    relevant = relevant.replace(variable_name, '/* %s */' %
+                            variable_name)
+                else:
+                    raise Exception('Logic error: unhandled option')
 
                 # Oh, Python, why are strings a collection but not really?
                 chars = list(line)

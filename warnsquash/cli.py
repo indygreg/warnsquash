@@ -64,6 +64,9 @@ def parse_args(args):
     #        help='Remove unused variable declarations.')
     parser.add_argument('--remove-unused-parameter-names', action='store_true',
             help='Remove the names of unused function parameters.')
+    parser.add_argument('--comment-unused-parameter-names',
+            action='store_true',
+            help='Replace unused parameter names with an in-line comment.')
 
     return (parser.parse_args(our_args), clang_args)
 
@@ -74,8 +77,9 @@ def main(args, fh):
         u = analyzer.CodeUnit(path, clang_args)
 
         u.fix_warnings(
-            remove_unused_variables=args.remove_unused_variables,
-            remove_unused_parameter_names=args.remove_unused_parameter_names
+            #remove_unused_variables=args.remove_unused_variables,
+            remove_unused_parameter_names=args.remove_unused_parameter_names,
+            comment_unused_parameter_names=args.comment_unused_parameter_names
         )
 
         output_performed = False
