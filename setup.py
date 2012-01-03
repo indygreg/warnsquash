@@ -9,5 +9,5 @@ setup(
     scripts=['bin/warnsquash'],
     license='LICENSE.txt',
     description='Tool to help squash compiler warnings.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
 )
