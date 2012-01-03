@@ -93,7 +93,7 @@ def main(args, fh):
 
         if args.print_diff:
             for line in difflib.unified_diff(u.original_lines, u.new_lines,
-                    fromfile=args.file, tofile=args.file):
+                    fromfile=path, tofile=path):
                 fh.write(line)
             output_performed = True
 
